@@ -24,7 +24,9 @@
           },
           "policies": {
             "inbound": [],
-            "outbound": []
+            "outbound": [
+              "set-skybridge-content-type"
+            ]
           },
           "mcp": {
             "type": "resource",
