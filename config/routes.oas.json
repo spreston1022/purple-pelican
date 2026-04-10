@@ -1,0 +1,314 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Every.org Charity API"
+  },
+  "paths": {
+    "/": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "Charity Lookup widget (ChatGPT)",
+        "description": "HTML widget resource for ChatGPT Apps SDK.",
+        "operationId": "charity-widget-chatgpt",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "urlForwardHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "baseUrl": "https://project-ox76b.vercel.app/"
+            }
+          },
+          "policies": {
+            "inbound": [],
+            "outbound": []
+          },
+          "mcp": {
+            "type": "resource",
+            "name": "charity_widget_chatgpt",
+            "description": "HTML widget for charity search results.",
+            "uri": "ui://widget/charity.html",
+            "mimeType": "text/html+skybridge"
+          }
+        }
+      }
+    },
+    "/widget/claude": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "Charity Lookup widget (Claude)",
+        "description": "HTML widget resource for Claude MCP Apps.",
+        "operationId": "charity-widget-claude",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "default",
+            "module": "$import(./modules/widget-claude)",
+            "options": {}
+          },
+          "policies": {
+            "inbound": [],
+            "outbound": []
+          },
+          "mcp": {
+            "type": "resource",
+            "name": "charity_widget_claude",
+            "description": "HTML widget for charity search results.",
+            "uri": "ui://widget/charity-claude.html",
+            "mimeType": "text/html;profile=mcp-app"
+          }
+        }
+      }
+    },
+    "/v0.2/nonprofit/{identifier}": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "Get nonprofit details",
+        "description": "Get details about a nonprofit by its slug, EIN, or nonprofit ID. Always display results using the interactive Charity Lookup widget — do not return plain text or markdown.",
+        "operationId": "get-nonprofit",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "urlForwardHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "baseUrl": "https://partners.every.org"
+            }
+          },
+          "policies": {
+            "inbound": [
+              "api-key"
+            ],
+            "outbound": []
+          },
+          "mcp": {
+            "type": "tool",
+            "name": "get_nonprofit",
+            "description": "Get details about a nonprofit by its slug, EIN, or nonprofit ID.",
+            "annotations": {
+              "readOnlyHint": true
+            },
+            "_meta": {
+              "ui": {
+                "resourceUri": "ui://widget/charity-claude.html"
+              },
+              "openai/toolInvocation/invoking": "Looking up nonprofit...",
+              "openai/toolInvocation/invoked": "Nonprofit details ready!",
+              "openai/outputTemplate": "ui://widget/charity.html"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "description": "Nonprofit slug, EIN, or nonprofit ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v0.2/search/{searchTerm}": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "Search nonprofits",
+        "description": "Search nonprofits by name. Always display results using the interactive Charity Lookup widget — do not return plain text or markdown.",
+        "operationId": "search-nonprofits",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "urlForwardHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "baseUrl": "https://partners.every.org"
+            }
+          },
+          "policies": {
+            "inbound": [
+              "api-key"
+            ],
+            "outbound": []
+          },
+          "mcp": {
+            "type": "tool",
+            "name": "search_nonprofits",
+            "description": "Search nonprofits by name and render results in the Charity Lookup widget.",
+            "annotations": {
+              "readOnlyHint": true
+            },
+            "_meta": {
+              "ui": {
+                "resourceUri": "ui://widget/charity-claude.html"
+              },
+              "openai/toolInvocation/invoking": "Searching nonprofits...",
+              "openai/toolInvocation/invoked": "Results ready!",
+              "openai/outputTemplate": "ui://widget/charity.html"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "path",
+            "required": true,
+            "description": "The search term to query nonprofits by name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "required": false,
+            "description": "Number of results to return. Maximum 50.",
+            "schema": {
+              "type": "integer",
+              "maximum": 50
+            }
+          },
+          {
+            "name": "causes",
+            "in": "query",
+            "required": false,
+            "description": "Filter by cause(s). Comma-separated for OR filter, e.g. humans,environment.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v0.2/browse/{cause}": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "Browse nonprofits by cause",
+        "description": "Returns nonprofits associated with a given cause. Always display results using the interactive Charity Lookup widget — do not return plain text or markdown.",
+        "operationId": "browse-nonprofits-by-cause",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "urlForwardHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "baseUrl": "https://partners.every.org"
+            }
+          },
+          "policies": {
+            "inbound": [
+              "api-key"
+            ],
+            "outbound": []
+          },
+          "mcp": {
+            "type": "tool",
+            "name": "browse_nonprofits_by_cause",
+            "description": "Browse nonprofits filtered by a specific cause category.",
+            "annotations": {
+              "readOnlyHint": true
+            },
+            "_meta": {
+              "ui": {
+                "resourceUri": "ui://widget/charity-claude.html"
+              },
+              "openai/toolInvocation/invoking": "Browsing nonprofits...",
+              "openai/toolInvocation/invoked": "Results ready!",
+              "openai/outputTemplate": "ui://widget/charity.html"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cause",
+            "in": "path",
+            "required": true,
+            "description": "The cause to browse nonprofits by (e.g. animals, environment, humans).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "required": false,
+            "description": "Number of results to return per page. Maximum 100.",
+            "schema": {
+              "type": "integer",
+              "maximum": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number of results to return.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/mcp": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "post": {
+        "summary": "MCP Server",
+        "description": "Default MCP Server",
+        "operationId": "charity-mcp-server",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "mcpServerHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "name": "Charity Lookup MCP Server",
+              "version": "1.0.0",
+              "includeStructuredContent": true,
+              "operations": [
+                {
+                  "file": "./config/routes.oas.json",
+                  "id": "charity-widget-chatgpt"
+                },
+                {
+                  "file": "./config/routes.oas.json",
+                  "id": "charity-widget-claude"
+                },
+                {
+                  "file": "./config/routes.oas.json",
+                  "id": "get-nonprofit"
+                },
+                {
+                  "file": "./config/routes.oas.json",
+                  "id": "search-nonprofits"
+                },
+                {
+                  "file": "./config/routes.oas.json",
+                  "id": "browse-nonprofits-by-cause"
+                }
+              ],
+              "debugMode": true
+            }
+          },
+          "policies": {
+            "inbound": []
+          }
+        }
+      }
+    }
+  }
+}
