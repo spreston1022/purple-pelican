@@ -23,6 +23,14 @@
           ]
         }
       }
+    },
+    {
+      "handler": {
+        "export": "default",
+        "module": "$import(./modules/shape-mcp-response)"
+      },
+      "name": "shape-mcp-response",
+      "policyType": "custom-code-outbound"
     }
   ]
 }
