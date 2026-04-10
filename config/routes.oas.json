@@ -88,9 +88,7 @@
             "inbound": [
               "api-key"
             ],
-            "outbound": [
-              "shape-mcp-response"
-            ]
+            "outbound": []
           },
           "mcp": {
             "type": "tool",
@@ -143,9 +141,7 @@
             "inbound": [
               "api-key"
             ],
-            "outbound": [
-              "shape-mcp-response"
-            ]
+            "outbound": []
           },
           "mcp": {
             "type": "tool",
@@ -217,9 +213,7 @@
             "inbound": [
               "api-key"
             ],
-            "outbound": [
-              "shape-mcp-response"
-            ]
+            "outbound": []
           },
           "mcp": {
             "type": "tool",
